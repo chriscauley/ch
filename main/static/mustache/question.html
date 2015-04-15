@@ -1,4 +1,4 @@
-<div>{{ question.verbose }}</div>
+<h1><center>{{ question.verbose }}</center></h1>
 {{#each question.answers }}
-<button can-click="checkAnswer">{{.}}</button>
+<button can-click="checkAnswer" class="btn btn-primary">{{.}}</button>
 {{/each}}

@@ -40,5 +40,5 @@ can.Component.extend({
 });
 $(function() {
   var q = can.mustache("<question></question>")({});
-  $("body").append(q);
+  $("#content").append(q);
 });
