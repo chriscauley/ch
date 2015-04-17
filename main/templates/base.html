@@ -9,11 +9,15 @@
     <meta name="author" content="{% block meta-author %}Chris Cauley{% endblock %}">
     <meta name="application-name" content="CryptoHumanism">
     <link rel="icon" href="/favicon.ico" type="image/x-icon" />
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" />
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.js"></script>
-    <script src="//canjs.com/release/latest/can.jquery.js"></script>
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/font-awesome.min.css" />
+    <link rel="stylesheet" href="{{ STATIC_URL }}less/bs.css" />
+    <script src="{{ STATIC_URL }}js/jquery.js"></script>
+    <script src="{{ STATIC_URL }}js/can.jquery.js"></script>
     <script src="{{ STATIC_URL }}js/can.localstorage.min.js"></script>
+    {% compress js %}
+    <script type="text/coffeescript" src="{{ STATIC_URL }}js/quiz.coffee"></script>
     <script src="{{ STATIC_URL }}js/app.js"></script>
+    {% endcompress %}
     {% compress css %}
     <link rel="stylesheet" type="text/less" href="{{ STATIC_URL }}less/base.less" />
     {% endcompress %}

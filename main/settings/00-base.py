@@ -75,6 +75,9 @@ STATICFILES_FINDERS = (
 )
 
 LESS_EXECUTABLE = 'lessc'
-COMPRESS_PRECOMPILERS = (('text/less', 'lessc {infile} {outfile}'),)
+COMPRESS_PRECOMPILERS = (
+  ('text/less', 'lessc {infile} {outfile}'),
+  ('text/coffeescript', 'coffee --compile --stdio'),
+)
 
 FAVICON = '/static/favicon.ico'

@@ -7,10 +7,12 @@ admin.autodiscover()
 urlpatterns = patterns(
   '',
   url(r'^admin/', include(admin.site.urls)),
+  url(r'^auth/',include('django.contrib.auth.urls')),
+
   url(r'^$', 'main.views.home',name='home'),
   url(r'favicon.ico$', 'main.views.redirect',
       {'url': getattr(settings,'FAVICON','/static/favicon.png')}),
-  url(r'^auth/',include('django.contrib.auth.urls')),
+  url(r'^app.appcache$','main.views.direct_to_template',{'template': 'app.appcache'}),
 )
 
 if settings.DEBUG:
