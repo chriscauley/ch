@@ -27,3 +27,18 @@ p a { text-decoration: underline; }
 ul,ol { list-style: none; margin: 0; padding: 0; }
 
 img,input { max-width: 100%; }
+
+#numpad {
+  text-align: center;
+  .number {
+    @s: 90px;
+    font-size: 2em;
+    font-weight: bold;
+    height: @s;
+    line-height: @s;
+    margin: 5px;
+    padding: 0;
+    text-align: center;
+    width: @s;
+  }
+}
