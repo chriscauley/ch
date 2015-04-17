@@ -2,7 +2,12 @@ var Question = can.Model.LocalStorage({
   storageName: 'ch'
 }, {});
 
-var scores = {}
+var scores = {};
+
+document.addEventListener("keypress",function(event) {
+  if (47 < event.which && event.which < 58) { pressNumber(event.which-48); return false; }
+  return true;
+});
 
 can.Component.extend({
   tag: 'question',
@@ -13,7 +18,8 @@ can.Component.extend({
     attrs.input = new can.List();
     attrs.digits = [1,2,3,4,5,6,7,8,9,0];
     attrs.question = new Modulo({});
-    attrs.pressNumber = function(that) {
+    window.pressNumber = attrs.pressNumber = function(that) {
+      console.log(that);
       attrs.input.push(that);
       var input = attrs.input.join('')
       if (input.indexOf(attrs.question.answer) != -1) { // Correct!
