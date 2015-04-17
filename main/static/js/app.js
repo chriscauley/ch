@@ -4,41 +4,31 @@ var Question = can.Model.LocalStorage({
 
 var scores = {}
 
-function Modulo(divisor) {
-  var divisor = divisor || Math.floor(Math.random()*(10-2)+2);
-  var max_question = Math.pow(divisor,3);
-  var question = Math.floor(Math.random()*(max_question-divisor+1)+divisor+1);
-  var answers = [];
-  for (var i=0;i<divisor;i++) { answers.push(i); }
-  return {
-    verbose: question + " % " + divisor,
-    answer: question%divisor,
-    answers: answers,
-    scoreKeys: ['modulo','mod'+divisor],
-  }
-}
-
-
 can.Component.extend({
   tag: 'question',
   template: can.view("/static/mustache/question.html"),
   viewModel: function(attrs)  {
     var fails = 0;
     var start = new Date().valueOf();
-    attrs.question = new Modulo();
-    attrs.checkAnswer = function(that) {
-      if (that == attrs.question.answer) {
+    attrs.input = new can.List();
+    attrs.digits = [1,2,3,4,5,6,7,8,9,0];
+    attrs.question = new Modulo({});
+    attrs.pressNumber = function(that) {
+      attrs.input.push(that);
+      var input = attrs.input.join('')
+      if (input.indexOf(attrs.question.answer) != -1) { // Correct!
         console.log({
-          fails: fails,
+          fail: input.indexOf(attrs.question.answer) != 0,
           ms: new Date().valueOf() - start,
         });
+        var q = can.mustache("<question></question>")({});
+        $("#content").html(q);
       }
-      else { fails ++; }
     }
     return attrs;
   },
 });
 $(function() {
   var q = can.mustache("<question></question>")({});
-  $("#content").append(q);
+  $("#content").html(q);
 });
