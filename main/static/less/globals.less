@@ -42,3 +42,22 @@ img,input { max-width: 100%; }
     width: @s;
   }
 }
+
+.question-box {
+  font-size: 35px;
+  margin-bottom: 10px;
+  padding: 22px 0 0;
+  text-align: center;
+  &[data-last-question] {
+    position: relative;
+    &:before {
+      color: @brand-success;
+      content: attr(data-last-question);
+      font-size: 0.5em;
+      left: 0;
+      position: absolute;
+      top: 0;
+      width: 100%;
+    }
+  }
+}
