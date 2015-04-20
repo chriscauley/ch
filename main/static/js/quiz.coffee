@@ -1,22 +1,41 @@
-class Modulo
-  constructor: (@options) ->
-    operand = @options.operand || Math.floor(Math.random()*(10-2)+2)
-    max_question = Math.pow(operand,3)
-    question = Math.floor(Math.random()*(max_question-operand+1)+operand+1)
-    @answers = [0 .. operand-1]
-    @verbose = question + " % " + operand
-    @answer = question%operand
-    @scoreKeys = ['modulo','mod'+operand]
+class MathQuiz
+  constructor: (@operator,@options) ->
+    @operand = @options.operand || Math.floor(Math.random()*(10-2)+2)
+    max_question = @options.max_question || Math.pow(@operand,3)
+    @question = Math.floor(Math.random()*(max_question-@operand+1)+@operand+1)
+    @verbose = [@question,@operator,@operand].join(' ')
+    @answer = eval(@verbose)
+    @answer = @question + @operand
 
-class Mulitply
+class AdditionQuiz extends MathQuiz
   constructor: (@options) ->
-    operand = @options.operand || Math.floor(Math.random()*(10-2)+2)
-    max_question = Math.pow(operand,3)
-    question = Math.floor(Math.random()*(max_question-operand+1)+operand+1)
-    @answers = [0 .. operand-1]
-    @verbose = question + " % " + operand
-    @answer = question%operand
-    @scoreKeys = ['modulo','mod'+operand]
-    
+    super "+",@options
+    @scoreKeys = ['addition','add'+@operand]
 
-window.Modulo = Modulo
+class SubtractionQuiz extends MathQuiz
+  constructor: (@options) ->
+    super "-",@options
+    @scoreKeys = ['subtration','sub'+@operand]
+
+class MultiplyQuiz extends MathQuiz
+  constructor: (@options) ->
+    super "*",@options
+    @scoreKeys = ['multiplication','mul'+@operand]
+
+class DivisionQuiz extends MathQuiz
+  constructor: (@options) ->
+    super "/",@options
+    @scoreKeys = ['division','div'+@operand]
+
+class ModuloQuiz extends MathQuiz
+  constructor: (@options) ->
+    super "%",@options
+    @scoreKeys = ['modulo','mod'+@operand]
+
+window.quiz = {
+  AdditionQuiz: AdditionQuiz
+  SubtractionQuiz: SubtractionQuiz
+  MultiplyQuiz: MultiplyQuiz
+  DivisionQuiz: DivisionQuiz
+  ModuloQuiz: ModuloQuiz
+}

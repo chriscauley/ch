@@ -17,9 +17,8 @@ can.Component.extend({
     var start = new Date().valueOf();
     attrs.input = new can.List();
     attrs.digits = [1,2,3,4,5,6,7,8,9,0];
-    attrs.question = new Modulo({});
+    attrs.question = new window.quiz.AdditionQuiz({});
     window.pressNumber = attrs.pressNumber = function(that) {
-      console.log(that);
       attrs.input.push(that);
       var input = attrs.input.join('')
       if (input.indexOf(attrs.question.answer) != -1) { // Correct!
