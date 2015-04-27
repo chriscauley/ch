@@ -13,26 +13,11 @@ can.Component.extend({
   tag: 'question',
   template: can.view("/static/mustache/question.html"),
   viewModel: function(attrs)  {
-    console.log(attrs);
-    var fails = 0;
-    var start = new Date().valueOf();
     attrs.input = new can.List();
     attrs.digits = [1,2,3,4,5,6,7,8,9,0];
-    attrs.question = new window.quiz.AdditionQuiz({});
-    window.pressNumber = attrs.pressNumber = function(that) {
-      attrs.input.push(that);
-      var input = attrs.input.join('')
-      if (input.indexOf(attrs.question.answer) != -1) { // Correct!
-        console.log({
-          fail: input.indexOf(attrs.question.answer) != 0,
-          ms: new Date().valueOf() - start,
-        });
-        var last_question = [attrs.question.verbose,'=',attrs.question.answer].join(' ');
-        console.log(last_question);
-        var q = can.mustache("<question></question>")({'last_question': last_question});
-        $("#content").html(q);
-      }
-    }
+    attrs = new can.Map(attrs);
+    var quiz = attrs.quiz = new window.quiz.LettersQuiz({attrs:attrs});
+    window.pressNumber = attrs.pressNumber = quiz.pressNumber.bind(quiz);
     return attrs;
   },
 });

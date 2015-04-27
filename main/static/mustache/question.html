@@ -1,5 +1,5 @@
 <div class="question-box" data-last-question="{{ last_question }}">
-  {{ question.verbose }} = <span class="answer">{{#each input }}{{.}}{{/each}}</span>
+  {{ verbose }} = <span class="answer">{{#each input }}{{.}}{{/each}}</span>
 </div>
 <div id="numpad">
   {{#each digits }}<button class="btn btn-primary number" can-click="pressNumber">{{.}}</button>{{/each}}
