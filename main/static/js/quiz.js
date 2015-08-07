@@ -21,20 +21,20 @@ function shuffle(array) {
 
 class Quiz {
   constructor(options) {
-    this.attrs = options.attrs; // This is the can.Component().attrs that control two way binding
+    this.letters = "abcdefghijklmnopqrstuvwxyz";
     this.makeQuestions();
     this.currentIndex = -1;
     this.next();
+    window.quiz.current = this;
   }
   next(options) {
+    this.input = '';
     this.start = new Date().valueOf();
     this.currentIndex += 1;
     if (this.currentIndex == this.questions.length) { this.gameOver(); }
     this.question = this.questions[this.currentIndex];
     this.getVerbose();
     this.getAnswer();
-    this.attrs.attr('verbose', this.verbose);
-    this.attrs.input.splice(0,this.attrs.input.length);
   }
   keyPress(e) {
     if (47 < event.which && event.which < 58) {
@@ -44,16 +44,16 @@ class Quiz {
     return true;
   }
   pressNumber(number) {
-    this.attrs.input.push(number);
-    input = this.attrs.input.join('');
-    if (input.indexOf(this.answer) != -1) { // correct!
+    this.input += number;
+    if (this.input.indexOf(this.answer) != -1) { // correct!
       console.log({
-        fail: input.indexOf(this.answer) != 0,
+        fail: this.input.indexOf(this.answer) != 0,
         ms: new Date().valueOf() - this.start,
       });
-      this.attrs.attr('last_question', [this.verbose,'=',this.answer].join(' '));
+      this.last_question = [this.verbose,'=',this.answer].join(' ');
       this.next();
     }
+    riot.update();
   }
   getIcon() {
     return "<i class='fa fa-#{ this.icon }'></i>";
@@ -64,7 +64,6 @@ class LettersQuiz extends Quiz {
   constructor(options) {
     super(options);
     this.name = "Letters";
-    this.letters = "abcdefghijklmnopqrstuvwxyz";
     this.scoreKeys = ['letters'];
   }
   makeQuestions() {
@@ -85,7 +84,7 @@ class MathQuiz extends Quiz {
   constructor(operator,options) {
     super(options);
     this.operand = options.operand || Math.floor(Math.random()*(10-2)+2);
-    max_question = options.max_question || Math.pow(this.operand,3);
+    var max_question = options.max_question || Math.pow(this.operand,3);
     this.question = Math.floor(Math.random()*(max_question-this.operand+1)+this.operand+1);
   }
   makeQuestions() {

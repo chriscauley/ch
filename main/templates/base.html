@@ -12,12 +12,6 @@
     <link rel="stylesheet" href="{{ STATIC_URL }}css/font-awesome.min.css" />
     <link rel="stylesheet" href="{{ STATIC_URL }}less/bs.css" />
     <script src="{{ STATIC_URL }}js/jquery.js"></script>
-    <script src="{{ STATIC_URL }}js/can.jquery.js"></script>
-    <script src="{{ STATIC_URL }}js/can.localstorage.min.js"></script>
-    {% compress js %}
-    <script type="text/babel" src="{{ STATIC_URL }}js/quiz.js"></script>
-    <script src="{{ STATIC_URL }}js/app.js"></script>
-    {% endcompress %}
     {% compress css %}
     <link rel="stylesheet" type="text/less" href="{{ STATIC_URL }}less/base.less" />
     {% endcompress %}
@@ -50,4 +44,10 @@
       </footer>
     </div>
   </body>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/riot/2.2.3/riot+compiler.min.js"></script>
+  <script type="riot/tag" src="{{ STATIC_URL }}tags/question.tag"></script>
+  {% compress js %}
+  <script type="text/babel" src="{{ STATIC_URL }}js/quiz.js"></script>
+  <script src="{{ STATIC_URL }}js/app.js"></script>
+  {% endcompress %}
 </html>
