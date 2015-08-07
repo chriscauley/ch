@@ -31,12 +31,16 @@ class Quiz {
     this.input = '';
     this.start = new Date().valueOf();
     this.currentIndex += 1;
-    if (this.currentIndex == this.questions.length) { this.gameOver(); }
+    if (this.currentIndex == this.questions.length) {
+      if (!this.fails) { this.gameOver(); }
+    }
     this.question = this.questions[this.currentIndex];
+    this.key = this.question;
     this.getVerbose();
     this.getAnswer();
   }
   keyPress(e) {
+    console.log(event.which);
     if (47 < event.which && event.which < 58) {
       this.pressNumber(event.which-48);
       return false;
@@ -46,14 +50,23 @@ class Quiz {
   pressNumber(number) {
     this.input += number;
     if (this.input.indexOf(this.answer) != -1) { // correct!
-      console.log({
+      quiz.scores[this.name] = quiz.scores[this.name] || {};
+      quiz.scores[this.name][this.key] = quiz.scores[this.name][this.key] || [];
+      quiz.scores[this.name][this.key].push({
         fail: this.input.indexOf(this.answer) != 0,
         ms: new Date().valueOf() - this.start,
       });
+      if (quiz.scores[this.name][this.key].length > 10) {
+        quiz.scores[this.name][this.key].splice(0,1);
+      }
       this.last_question = [this.verbose,'=',this.answer].join(' ');
       this.next();
+      this.save();
     }
     riot.update();
+  }
+  save() {
+    localStorage.setItem('scores',JSON.stringify(quiz.scores));
   }
   getIcon() {
     return "<i class='fa fa-#{ this.icon }'></i>";
@@ -67,10 +80,11 @@ class LettersQuiz extends Quiz {
     this.scoreKeys = ['letters'];
   }
   makeQuestions() {
-    this.questions = shuffle(range(0,25));
+    this.questions = shuffle(range(0,26));
   }
   getVerbose() {
     this.verbose = this.letters[this.question] + ">#";
+    this.key = this.letters[this.question];
   }
   getAnswer() {
     this.answer = this.question + 1;
@@ -155,6 +169,8 @@ window.quiz = {
   ModuloQuiz: ModuloQuiz,
   LettersQuiz: LettersQuiz
 }
+
+quiz.scores = JSON.parse(localStorage.getItem('scores') || "{}");
 
 window.quizes = [
   new AdditionQuiz({}),
