@@ -48,15 +48,20 @@ class Quiz
       })
       @attrs.attr('last_question', [@verbose,'=',@answer].join(' '))
       @next()
+  getIcon: () ->
+    return "<i class='fa fa-#{ @icon }'></i>"
 
 class LettersQuiz extends Quiz
   constructor: (@options) ->
+    @name = "Letters"
     @letters = "abcdefghijklmnopqrstuvwxyz"
     super @options
     @scoreKeys = ['letters']
   makeQuestions: () -> @questions = shuffle([0..25])
   getVerbose: () -> @verbose = @letters[@question] + ">#"
   getAnswer: () -> @answer = @question + 1
+  getIcon: () ->
+    return "<i class='fa'>d&gt;#</i>"
   
 class MathQuiz extends Quiz
   constructor: (@operator,@options) ->
@@ -72,28 +77,40 @@ class MathQuiz extends Quiz
 
 class AdditionQuiz extends MathQuiz
   constructor: (@options) ->
+    @icon = "plus"
+    @name = "Addition"
     super "+",@options
     @scoreKeys = ['addition','add'+@operand]
 
 class SubtractionQuiz extends MathQuiz
   constructor: (@options) ->
+    @icon = "minus"
+    @name = "Subtraction"
     super "-",@options
     @scoreKeys = ['subtration','sub'+@operand]
 
 class MultiplyQuiz extends MathQuiz
   constructor: (@options) ->
+    @icon = "times"
+    @name = "Multiplication"
     super "*",@options
     @scoreKeys = ['multiplication','mul'+@operand]
 
 class DivisionQuiz extends MathQuiz
   constructor: (@options) ->
+    @name = "Division"
     super "/",@options
     @scoreKeys = ['division','div'+@operand]
-
+  getIcon: () ->
+    return "<i class='fa'>&divide;</i>"
+    
 class ModuloQuiz extends MathQuiz
   constructor: (@options) ->
+    @name = "Modulo"
     super "%",@options
     @scoreKeys = ['modulo','mod'+@operand]
+  getIcon: () ->
+    return "<i class='fa'>%</i>"
 
 window.quiz = {
   AdditionQuiz: AdditionQuiz
@@ -103,3 +120,12 @@ window.quiz = {
   ModuloQuiz: ModuloQuiz
   LettersQuiz: LettersQuiz
 }
+
+window.quizes = [
+  new AdditionQuiz({})
+  new SubtractionQuiz({})
+  new MultiplyQuiz({})
+  new DivisionQuiz({})
+  new ModuloQuiz({})
+  new LettersQuiz({})
+]
