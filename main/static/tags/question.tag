@@ -16,3 +16,13 @@
     window.quiz.current.pressNumber(e.item.n);
   }
 </numpad>
+
+<scorelist>
+  <div each={ scores }>
+    { key }: { ms }ms
+    <span if={ fail }>({ fail }/{ count } wrong)</span>
+  </div>
+  this.on("update",function() {
+    this.scores = window.quiz.current.getScores();
+  });
+</scorelist>
