@@ -62,3 +62,38 @@ numpad {
     }
   }
 }
+
+quizlist {
+  .row { margin: 0 -10px; }
+  .half {
+    float: left;
+    padding: 10px;
+    width: 50%;
+  }
+}
+
+.fa-divide, .fa-letters-quiz, .fa-modulo {
+  display: inline-block;
+  height: 16px;
+  position: relative;
+  width: 14px;
+  &:before {
+    font: bold 25px Arial;
+    height: 20px;
+    left: 0;
+    line-height: 20px;
+    position: absolute;
+    top: 0;
+  }
+}
+
+.fa-divide:before { content: "\00F7"; }
+.fa-letters-quiz {
+  width: 35px;
+  &:before { content: "d>#"; font-size: 18px; }
+}
+
+.fa-modulo {
+  width: 20px;
+  &:before { content: "%"; font-size: 18px; }
+}

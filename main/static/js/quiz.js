@@ -79,9 +79,6 @@ class Quiz {
   save() {
     localStorage.setItem('scores',JSON.stringify(quiz.scores));
   }
-  getIcon() {
-    return "<i class='fa fa-#{ this.icon }'></i>";
-  }
   getScores() {
     var scores = quiz.scores[this.name];
     var out = [];
@@ -108,6 +105,8 @@ class LettersQuiz extends Quiz {
     super(options);
     this.name = "Letters";
     this.scoreKeys = ['letters'];
+    this.icon = 'letters-quiz';
+    this.icon_text = "d>#";
   }
   makeQuestions() {
     this.questions = shuffle(range(0,26));
@@ -118,9 +117,6 @@ class LettersQuiz extends Quiz {
   }
   getAnswer() {
     this.answer = this.question + 1;
-  }
-  getIcon() {
-    return "<i class='fa'>d&gt;#</i>"
   }
 }
   
@@ -175,9 +171,7 @@ class DivisionQuiz extends MathQuiz {
     super("/",options)
     this.name = "Division"
     this.scoreKeys = ['division','div'+this.operand]
-  }
-  getIcon() {
-    return "<i class='fa'>&divide;</i>"
+    this.icon = 'divide'
   }
 }
     
@@ -186,9 +180,7 @@ class ModuloQuiz extends MathQuiz {
     super("%",options)
     this.name = "Modulo"
     this.scoreKeys = ['modulo','mod'+this.operand]
-  }
-  getIcon() {
-    return "<i class='fa'>%</i>"
+    this.icon = 'modulo'
   }
 }
 

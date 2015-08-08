@@ -1,3 +1,15 @@
+<quizlist>
+  <div class="row">
+    <div class="half" each={ quizzes }>
+      <button class="btn btn-primary btn-block">
+        <i class="fa fa-{ icon }"></i> { name }</button>
+    </div>
+  </div>
+  this.on('update',function() {
+    this.quizzes = window.quizes;
+  });
+</quizlist>
+
 <question>
   <div class="question-box" data-last-question={ quiz.last_question }>
     { quiz.verbose } = <span class="answer">{ quiz.input }</span>

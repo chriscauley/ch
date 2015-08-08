@@ -5,5 +5,4 @@ document.addEventListener("keypress",function(event) {
   return true;
 });
 
-new quiz.LettersQuiz()
-riot.mount("question")
+riot.mount("quizlist")
