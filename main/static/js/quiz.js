@@ -39,6 +39,10 @@ class Quiz {
     this.getVerbose();
     this.getAnswer();
   }
+  gameOver() {
+    document.getElementById('content').innerHTML = "<scorelist></scorelist>";
+    riot.mount('scorelist');
+  }
   keyPress(e) {
     console.log(event.which);
     if (47 < event.which && event.which < 58) {
@@ -50,26 +54,52 @@ class Quiz {
   pressNumber(number) {
     this.input += number;
     if (this.input.indexOf(this.answer) != -1) { // correct!
-      quiz.scores[this.name] = quiz.scores[this.name] || {};
-      quiz.scores[this.name][this.key] = quiz.scores[this.name][this.key] || [];
-      quiz.scores[this.name][this.key].push({
-        fail: this.input.indexOf(this.answer) != 0,
-        ms: new Date().valueOf() - this.start,
-      });
-      if (quiz.scores[this.name][this.key].length > 10) {
-        quiz.scores[this.name][this.key].splice(0,1);
-      }
       this.last_question = [this.verbose,'=',this.answer].join(' ');
+      this.setScore();
       this.next();
-      this.save();
     }
     riot.update();
   }
+  setScore() {
+    var value = {
+      fail: this.input.indexOf(this.answer) != 0,
+      ms: new Date().valueOf() - this.start,
+    };
+    for (var i=0;i<this.keys.length;i++) {
+      var key = this.keys[i];
+      quiz.scores[this.name] = quiz.scores[this.name] || {};
+      quiz.scores[this.name][key] = quiz.scores[this.name][key] || [];
+      quiz.scores[this.name][key].push(value);
+      console.log("score set for "+key);
+    }
+    // remove all but 5 most recent values
+    quiz.scores[this.name][key].splice(0,quiz.scores[this.name][key].length-5);
+    this.save();
+  }  
   save() {
     localStorage.setItem('scores',JSON.stringify(quiz.scores));
   }
   getIcon() {
     return "<i class='fa fa-#{ this.icon }'></i>";
+  }
+  getScores() {
+    var scores = quiz.scores[this.name];
+    var out = [];
+    for (var key in scores) {
+      var list = scores[key];
+      var score = { fail:0, ms:0, key: key, count: list.length };
+      for (var i=0;i<list.length;i++) {
+        score.fail += list[i].fail;
+        score.ms += list[i].ms;
+      }
+      score.ms = Math.round(score.ms/list.length);
+      out.push(score);
+    }
+    out.sort(function(a,b) {
+      if (a.key == b.key) { return 0; }
+      return (a.key<b.key)?-1:1
+    });
+    return out;
   }
 }
 
@@ -84,7 +114,7 @@ class LettersQuiz extends Quiz {
   }
   getVerbose() {
     this.verbose = this.letters[this.question] + ">#";
-    this.key = this.letters[this.question];
+    this.keys = [this.letters[this.question]];
   }
   getAnswer() {
     this.answer = this.question + 1;
@@ -109,6 +139,7 @@ class MathQuiz extends Quiz {
   }
   getVerbose() {
     this.verbose = [this.question,this.operator,this.operand].join(' ')
+    this.keys = [this.question,this.operand];
   }
 }
 
