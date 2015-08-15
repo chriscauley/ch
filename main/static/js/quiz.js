@@ -22,9 +22,6 @@ function shuffle(array) {
 class Quiz {
   constructor(options) {
     this.letters = "abcdefghijklmnopqrstuvwxyz";
-    this.makeQuestions();
-    this.currentIndex = -1;
-    this.next();
     window.quiz.current = this;
   }
   next(options) {
@@ -44,7 +41,6 @@ class Quiz {
     riot.mount('scorelist');
   }
   keyPress(e) {
-    console.log(event.which);
     if (47 < event.which && event.which < 58) {
       this.pressNumber(event.which-48);
       return false;
@@ -70,7 +66,6 @@ class Quiz {
       quiz.scores[this.name] = quiz.scores[this.name] || {};
       quiz.scores[this.name][key] = quiz.scores[this.name][key] || [];
       quiz.scores[this.name][key].push(value);
-      console.log("score set for "+key);
     }
     // remove all but 5 most recent values
     quiz.scores[this.name][key].splice(0,quiz.scores[this.name][key].length-5);
@@ -98,13 +93,15 @@ class Quiz {
     });
     return out;
   }
+  getGames() {
+    
+  }
 }
 
 class LettersQuiz extends Quiz {
   constructor(options) {
     super(options);
     this.name = "Letters";
-    this.scoreKeys = ['letters'];
     this.icon = 'letters-quiz';
     this.icon_text = "d>#";
   }
@@ -123,15 +120,29 @@ class LettersQuiz extends Quiz {
 class MathQuiz extends Quiz {
   constructor(operator,options) {
     super(options);
-    this.operand = options.operand || Math.floor(Math.random()*(10-2)+2);
-    var max_question = options.max_question || Math.pow(this.operand,3);
-    this.question = Math.floor(Math.random()*(max_question-this.operand+1)+this.operand+1);
+    this.operator = operator;
+  }
+  selectGame(operand) {
+    this.operand = operand;
+    this.max_question = this.max_question || Math.max(this.operand+3,10);
+    this.makeQuestions();
+    this.currentIndex = -1;
+    this.next();
+  }
+  getGames() {
+    super.getGames()
+    var games = range(2,25);
+    var out = [];
+    for (var i=0;i<games.length; i++) {
+      out.push({verbose:games[i]});
+    }
+    return out;
   }
   makeQuestions() {
-    this.questions = shuffle(range(2,20));
+    this.questions = range(2,this.max_question+1)
   }
   getAnswer() {
-    this.answer = eval(this.verbose)
+    this.answer = Math.floor(eval(this.verbose));
   }
   getVerbose() {
     this.verbose = [this.question,this.operator,this.operand].join(' ')
@@ -144,7 +155,6 @@ class AdditionQuiz extends MathQuiz {
     super("+",options)
     this.icon = "plus"
     this.name = "Addition"
-    this.scoreKeys = ['addition','add'+this.operand]
   }
 }
 
@@ -153,7 +163,6 @@ class SubtractionQuiz extends MathQuiz {
     super("-",options)
     this.icon = "minus"
     this.name = "Subtraction"
-    this.scoreKeys = ['subtration','sub'+this.operand]
   }
 }
 
@@ -162,7 +171,6 @@ class MultiplyQuiz extends MathQuiz {
     super("*",options)
     this.icon = "times"
     this.name = "Multiplication"
-    this.scoreKeys = ['multiplication','mul'+this.operand]
   }
 }
 
@@ -170,7 +178,6 @@ class DivisionQuiz extends MathQuiz {
   constructor(options) {
     super("/",options)
     this.name = "Division"
-    this.scoreKeys = ['division','div'+this.operand]
     this.icon = 'divide'
   }
 }
@@ -179,7 +186,6 @@ class ModuloQuiz extends MathQuiz {
   constructor(options) {
     super("%",options)
     this.name = "Modulo"
-    this.scoreKeys = ['modulo','mod'+this.operand]
     this.icon = 'modulo'
   }
 }
