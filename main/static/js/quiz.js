@@ -36,22 +36,15 @@ class Quiz {
     this.getAnswer();
   }
   gameOver() {
-    document.getElementById('content').innerHTML = "<game-over></game-over>";
-    riot.mount('game-over');
     this.scores.push({
       fails: this.fails,
       ms: new Date().valueOf() - this.start,
       count: this.questions.length,
       date: new Date().valueOf()
     });
+    document.getElementById('content').innerHTML = "<game-over></game-over>";
+    riot.mount('game-over');
     localStorage.setItem('scores',JSON.stringify(QUIZ.scores));
-  }
-  keyPress(e) {
-    if (47 < event.which && event.which < 58) {
-      this.pressNumber(event.which-48);
-      return false;
-    }
-    return true;
   }
   pressNumber(number) {
     this.input += number;
@@ -88,7 +81,6 @@ class LettersQuiz extends Quiz {
   }
   getVerbose() {
     this.verbose = this.letters[this.question] + ">#";
-    this.keys = [this.letters[this.question]];
   }
   getAnswer() {
     this.answer = this.question + 1;
@@ -102,7 +94,6 @@ class MathQuiz extends Quiz {
   }
   startGame(game) {
     super.startGame(game);
-    console.log(game);
     this.operand = game;
     this.max_question = this.max_question || Math.max(this.operand+3,10);
     this.makeQuestions();
@@ -120,7 +111,6 @@ class MathQuiz extends Quiz {
     return out;
   }
   makeQuestions() {
-    this.max_question = 4;
     this.questions = shuffle(range(2,this.max_question+1));
   }
   getAnswer() {
@@ -128,7 +118,6 @@ class MathQuiz extends Quiz {
   }
   getVerbose() {
     this.verbose = [this.question,this.operator,this.operand].join(' ')
-    this.keys = [this.question,this.operand];
   }
 }
 
@@ -146,6 +135,11 @@ class SubtractionQuiz extends MathQuiz {
     this.icon = "minus"
     this.name = "Subtraction"
   }
+  makeQuestions() {
+    super.makeQuestions()
+    var that = this;
+    this.questions = this.questions.map(function(q) { return q + that.game });
+  }
 }
 
 class MultiplyQuiz extends MathQuiz {
@@ -161,6 +155,11 @@ class DivisionQuiz extends MathQuiz {
     super("/",options)
     this.name = "Division"
     this.icon = 'divide'
+  }
+  makeQuestions() {
+    super.makeQuestions()
+    var that = this;
+    this.questions = this.questions.map(function(q) { return q * that.game });
   }
 }
     
@@ -197,7 +196,7 @@ window.QUIZ.list = [
   new LettersQuiz({})
 ]
 
-document.addEventListener("keypress",function(event) {
+$(document).keyup(function(event) {
   if (47 < event.which && event.which < 58) { QUIZ.current.pressNumber(event.which-48); return false; }
   return true;
 });
