@@ -22,14 +22,13 @@ function shuffle(array) {
 class Quiz {
   constructor(options) {
     this.letters = "abcdefghijklmnopqrstuvwxyz";
-    window.quiz.current = this;
+    window.QUIZ.current = this;
   }
   next(options) {
     this.input = '';
-    this.start = new Date().valueOf();
     this.currentIndex += 1;
     if (this.currentIndex == this.questions.length) {
-      if (!this.fails) { this.gameOver(); }
+      this.gameOver();
     }
     this.question = this.questions[this.currentIndex];
     this.key = this.question;
@@ -37,8 +36,15 @@ class Quiz {
     this.getAnswer();
   }
   gameOver() {
-    document.getElementById('content').innerHTML = "<scorelist></scorelist>";
-    riot.mount('scorelist');
+    document.getElementById('content').innerHTML = "<game-over></game-over>";
+    riot.mount('game-over');
+    this.scores.push({
+      fails: this.fails,
+      ms: new Date().valueOf() - this.start,
+      count: this.questions.length,
+      date: new Date().valueOf()
+    });
+    localStorage.setItem('scores',JSON.stringify(QUIZ.scores));
   }
   keyPress(e) {
     if (47 < event.which && event.which < 58) {
@@ -51,50 +57,22 @@ class Quiz {
     this.input += number;
     if (this.input.indexOf(this.answer) != -1) { // correct!
       this.last_question = [this.verbose,'=',this.answer].join(' ');
-      this.setScore();
+      if (this.input.indexOf(this.answer) != 0) { this.fail += 1; }
       this.next();
     }
     riot.update();
-  }
-  setScore() {
-    var value = {
-      fail: this.input.indexOf(this.answer) != 0,
-      ms: new Date().valueOf() - this.start,
-    };
-    for (var i=0;i<this.keys.length;i++) {
-      var key = this.keys[i];
-      quiz.scores[this.name] = quiz.scores[this.name] || {};
-      quiz.scores[this.name][key] = quiz.scores[this.name][key] || [];
-      quiz.scores[this.name][key].push(value);
-    }
-    // remove all but 5 most recent values
-    quiz.scores[this.name][key].splice(0,quiz.scores[this.name][key].length-5);
-    this.save();
   }  
-  save() {
-    localStorage.setItem('scores',JSON.stringify(quiz.scores));
-  }
-  getScores() {
-    var scores = quiz.scores[this.name];
-    var out = [];
-    for (var key in scores) {
-      var list = scores[key];
-      var score = { fail:0, ms:0, key: key, count: list.length };
-      for (var i=0;i<list.length;i++) {
-        score.fail += list[i].fail;
-        score.ms += list[i].ms;
-      }
-      score.ms = Math.round(score.ms/list.length);
-      out.push(score);
-    }
-    out.sort(function(a,b) {
-      if (a.key == b.key) { return 0; }
-      return (a.key<b.key)?-1:1
-    });
-    return out;
-  }
   getGames() {
     
+  }
+  startGame(game) {
+    this.game = game;
+    this.fails = 0;
+    this.start = new Date().valueOf();
+    $("#content").html("<question>");
+    riot.mount("question,numpad");
+    QUIZ.scores[this.name] = QUIZ.scores[this.name] || {};
+    this.scores = QUIZ.scores[this.name][game] = QUIZ.scores[this.name][game] || [];
   }
 }
 
@@ -122,12 +100,15 @@ class MathQuiz extends Quiz {
     super(options);
     this.operator = operator;
   }
-  selectGame(operand) {
-    this.operand = operand;
+  startGame(game) {
+    super.startGame(game);
+    console.log(game);
+    this.operand = game;
     this.max_question = this.max_question || Math.max(this.operand+3,10);
     this.makeQuestions();
     this.currentIndex = -1;
     this.next();
+    riot.update();
   }
   getGames() {
     super.getGames()
@@ -139,7 +120,8 @@ class MathQuiz extends Quiz {
     return out;
   }
   makeQuestions() {
-    this.questions = range(2,this.max_question+1)
+    this.max_question = 4;
+    this.questions = shuffle(range(2,this.max_question+1));
   }
   getAnswer() {
     this.answer = Math.floor(eval(this.verbose));
@@ -190,7 +172,7 @@ class ModuloQuiz extends MathQuiz {
   }
 }
 
-window.quiz = {
+window.QUIZ = {
   AdditionQuiz: AdditionQuiz,
   SubtractionQuiz: SubtractionQuiz,
   MultiplyQuiz: MultiplyQuiz,
@@ -199,9 +181,14 @@ window.quiz = {
   LettersQuiz: LettersQuiz
 }
 
-quiz.scores = JSON.parse(localStorage.getItem('scores') || "{}");
+QUIZ.scores = JSON.parse(localStorage.getItem('scores') || "{}");
+QUIZ.resetScores = function() { localStorage.removeItem('scores'); }
+QUIZ.resetAll = function() { 
+  document.getElementById("content").innerHTML = "<quizlist></quizlist>";
+  riot.mount("quizlist");
+}
 
-window.quizes = [
+window.QUIZ.list = [
   new AdditionQuiz({}),
   new SubtractionQuiz({}),
   new MultiplyQuiz({}),
@@ -209,3 +196,10 @@ window.quizes = [
   new ModuloQuiz({}),
   new LettersQuiz({})
 ]
+
+document.addEventListener("keypress",function(event) {
+  if (47 < event.which && event.which < 58) { QUIZ.current.pressNumber(event.which-48); return false; }
+  return true;
+});
+
+QUIZ.resetAll();
