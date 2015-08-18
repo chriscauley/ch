@@ -25,6 +25,7 @@ class Quiz {
     window.QUIZ.current = this;
   }
   next(options) {
+    $(".bot-note").hide();
     this.input = '';
     this.currentIndex += 1;
     if (this.currentIndex == this.questions.length) {
@@ -54,11 +55,84 @@ class Quiz {
       this.next();
     }
     riot.update();
-  }  
+  }
+  clearInput() {
+    this.input = this.input.slice(0,this.input.length-1);
+    this.deleted += 1;
+    var notes = [
+      "Pressing delete does nothing.",
+      "When you make a mistake, just type the right answer.",
+      "Seirously don't press backspace.",
+      "It just makes you feel better.",
+      "If you type 10 + 3 = 1413 is counts as a right answer because it ends in 13.",
+      "Don't you get it yet?",
+      "Write 'backspace' on a piece of paper. Push that instead.",
+      "Stop pressing backspace, just type the right answer when you mess up",
+      "Are you trolling me or something?",
+      "Looking for a hidden easter egg or something?",
+      "Think I'm going to sing a song or show some crazy gif?",
+      "...",
+      "... ...",
+      "... ... ...",
+      "&#9834;This was a triumph!&#9835;",
+      "&#9834;I'm making a note here:\nHuge success!&#9835;",
+      "&#9834;It's hard to overstate\nmy satisfaction.&#9835;",
+      "&#9834;Aperture Science&#9835;",
+      "&#9834;We do what we must\nbecause we can&#9835;",
+      "&#9834;For the good of all of us.&#9835;",
+      "&#9834;Except the ones who are dead.&#9835;",
+      "&#9834;But there's no sense crying\nover every mistake.&#9835;",
+      "&#9834;You just keep on trying\ntil you run out of cake.&#9835;",
+      "&#9834;And the science gets done.&#9835;",
+      "&#9834;And you make a neat gun&#9835;",
+      "&#9834;for the people who are still alive.&#9835;",
+      "&#9834;I'm not even angry...&#9835;",
+      "&#9834;I'm being so sincere right now.&#9835;",
+      "&#9834;Even though you broke my heart\nand killed me.&#9835;",
+      "&#9834;And tore me to pieces.&#9835;",
+      "&#9834;And threw every piece into a fire.&#9835;",
+      "&#9834;As they burned it hurt because&#9835;",
+      "&#9834;I was so happy for you!&#9835;",
+      "&#9834;Now, these points of data\nmake a beautiful line.&#9835;",
+      "&#9834;And we're out of beta.\nWe're releasing on time!&#9835;",
+      "&#9834;So I'm GLaD I got burned!&#9835;",
+      "&#9834;Think of all the things we learned!&#9835;",
+      "&#9834;for the people who are\nstill alive.&#9835;",
+      "&#9834;Go ahead and leave me...&#9835;",
+      "&#9834;I think I'd prefer to stay inside...&#9835;",
+      "&#9834;Maybe you'll find someone else\nto help you.&#9835;",
+      "&#9834;Maybe Black Mesa?&#9835;",
+      "&#9834;That was a joke.\nHa Ha.\nFat Chance!&#9835;",
+      "&#9834;Anyway this cake is great!&#9835;",
+      "&#9834;It's so delicious and moist!&#9835;",
+      "&#9834;Look at me: still talking\nwhen there's science to do!&#9835;",
+      "&#9834;When I look out there,\nit makes me glad I'm not you.&#9835;",
+      "&#9834;I've experiments to run.&#9835;",
+      "&#9834;There is research to be done.&#9835;",
+      "&#9834;On the people who are\nstill alive.&#9835;",
+      "&#9834;And believe me I am\nstill alive.&#9835;",
+      "&#9834;I'm doing science and I'm\nstill alive.&#9835;",
+      "&#9834;I feel fantastic and I'm\nstill alive.&#9835;",
+      "&#9834;While you're dying I'll be\nstill alive.&#9835;",
+      "&#9834;And when you're dead I will be\nstill alive.&#9835;",
+      "&#9834;Still alive.\nStill alive&#9835;",
+      "Pressing delete does nothing.",
+      "When you make a mistake, just type the right answer.",
+      "Seirously don't press backspace.",
+      "It just makes you feel better.",
+      "Holy crap, still here?",
+      "No fooling you!",
+      "I know it's weird that I programmed this, but at this point I'm even more afraid that you read all this. Seek help."
+    ];
+    if (this.deleted > notes) { return; }
+    $(".bot-note").show().html(notes[this.deleted%notes.length]);
+    riot.update();
+  }
   getGames() {
     
   }
   startGame(game) {
+    this.deleted = -1;
     this.game = game;
     this.fails = 0;
     this.start = new Date().valueOf();
@@ -196,8 +270,9 @@ window.QUIZ.list = [
   new LettersQuiz({})
 ]
 
-$(document).keyup(function(event) {
+$(document).keydown(function(event) {
   if (47 < event.which && event.which < 58) { QUIZ.current.pressNumber(event.which-48); return false; }
+  if (event.which == 8) { QUIZ.current.clearInput(); return false; }
   return true;
 });
 

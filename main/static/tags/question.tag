@@ -31,6 +31,7 @@
     { quiz.verbose } = <span class="answer">{ quiz.input }</span>
   </div>
   <numpad></numpad>
+  <div class="bot-note btn btn-warning btn-block"></div>
   this.on("update",function() {
     this.quiz = window.QUIZ.current;
   });
@@ -38,8 +39,13 @@
 
 <numpad>
   <button class="btn btn-primary number" onclick={ parent.pressNumber } each={ digits }>{ n }</button>
+  <div class="clear-wrap">
+    <button class="btn btn-primary number fa fa-times-circle" onclick={ clear }></button></div>
   this.digits = [];
   for (var i=1;i<11;i++) { this.digits.push({n:i%10}) }
+  clear() {
+    window.QUIZ.current.clearInput();
+  }
   pressNumber(e) {
     window.QUIZ.current.pressNumber(e.item.n);
   }
@@ -89,10 +95,10 @@
       }
     }
     this.total_accuracy = Math.floor((this.total_count - this.total_fails) / this.total_count * 100);
-    this.total_spq = (this.total_ms / 1000 / this.total_count).toFixed(1);
+    this.total_spq = (this.total_ms*0.001 / this.total_count).toFixed(1);
     if (this.count3) {
       this.accuracy3 = Math.floor((this.count3 - this.fails3) / this.count3 * 100);
-      this.spq3 = (this.ms3 / 1000 / this.count3).toFixed(1);
+      this.spq3 = (this.ms3*0.001 / this.count3).toFixed(1);
     }
   });
 </game-over>
