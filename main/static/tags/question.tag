@@ -20,7 +20,7 @@
     this.games = window.QUIZ.current.getGames();
   });
   click(e) {
-    QUIZ.current.startGame(e.item.verbose);
+    QUIZ.current.startGame(e.item);
   }
 </gamelist>
 
@@ -51,7 +51,7 @@
 </numpad>
 
 <game-over>
-  <h1>{ quiz.name } { quiz.game }</h1>
+  <h1>{ quiz.name } { verbose }</h1>
   <div class="well">
     <li>This game:</li>
     <li>{ last.accuracy }% Correct</li>
@@ -85,11 +85,12 @@
 
   this.on("update",function() {
     this.quiz = window.QUIZ.current;
+    this.verbose = this.quiz.game.verbose.replace(/ /g,"");
     this.scores = this.quiz.scores;
     this.total_fails = this.total_count = this.total_ms = this.fails3 = this.count3 = this.ms3 = 0;
     var last = this.scores[this.scores.length-1]
     this.last = {
-      accuracy: (last.count - last.fails) / last.count * 100,
+      accuracy: ((last.count - last.fails) / last.count * 100).toFixed(0),
       spq: (last.ms*0.001 / last.count).toFixed(1)
     }
     for (var i=0;i<this.scores.length;i++) {

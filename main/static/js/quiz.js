@@ -141,7 +141,7 @@ class Quiz {
     this.start = new Date().valueOf();
     uR.mountElement("question");
     QUIZ.scores[this.name] = QUIZ.scores[this.name] || {};
-    this.scores = QUIZ.scores[this.name][game] = QUIZ.scores[this.name][game] || [];
+    this.scores = QUIZ.scores[this.name][game.verbose] = QUIZ.scores[this.name][game.verbose] || [];
     this.makeQuestions();
     this.currentIndex = -1;
     this.next();
@@ -157,20 +157,22 @@ class LettersQuiz extends Quiz {
     this.icon_text = "d>#";
   }
   getGames() {
-    var out = [];
-    uR.forEach(this.letters,function(l){
-      out.push({verbose: l});
-    });
-    return out;
+    return [
+      {verbose: "A B C D E F G H I J % 10",questions:"ABCDEFGHIJ"},
+      {verbose: "K L M N O P Q R S T % 10",questions:"KLMNOPQRST"},
+      {verbose: "U V W X Y Z % 10",questions: "UVXWYZ"},
+      {verbose: "A - Z % 10",questions: "ABCDEFGHIJKLMNOPQRSTUVWZYZ"},
+    ]
   }
   makeQuestions() {
-    this.questions = shuffle(range(0,26));
+    this.questions = shuffle(range(0,this.game.questions.length-1));
   }
   getVerbose() {
-    this.verbose = this.letters[this.question] + ">#";
+    console.log(this.game.questions)
+    this.verbose = this.game.questions[this.question] + " % "+(this.game.mod || 10);
   }
   getAnswer() {
-    this.answer = this.question + 1;
+    this.answer = (this.question + 1) % (this.game.mod || 10);
   }
 }
   
