@@ -9,9 +9,7 @@
     this.quizzes = window.QUIZ.list;
   });
   click(e) {
-    QUIZ.current = e.item;
-    $("#content").html("<gamelist>");
-    riot.mount("gamelist");
+    uR.route("/game/"+e.item.getSlug()+"/");
   }
 </quizlist>
 

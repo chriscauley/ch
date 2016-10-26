@@ -24,6 +24,9 @@ class Quiz {
     this.letters = "abcdefghijklmnopqrstuvwxyz";
     window.QUIZ.current = this;
   }
+  getSlug() {
+    return this.name.toLowerCase();
+  }
   next(options) {
     $(".bot-note").hide();
     this.input = '';
@@ -269,6 +272,9 @@ window.QUIZ.list = [
   new ModuloQuiz({}),
   new LettersQuiz({})
 ]
+
+QUIZ.map = {};
+uR.forEach(QUIZ.list,function(q) { QUIZ.map[q.getSlug()] = q; });
 
 $(document).keydown(function(event) {
   if (47 < event.which && event.which < 58) { QUIZ.current.pressNumber(event.which-48); return false; }

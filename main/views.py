@@ -1,7 +1,7 @@
 from django.http import HttpResponseRedirect
 from django.template.response import TemplateResponse
 
-def home(request):
+def home(request,path=""):
   return TemplateResponse(request,"index.html",{})
 
 def direct_to_template(request,template,context={}):
