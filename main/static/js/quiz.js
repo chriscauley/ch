@@ -32,7 +32,7 @@ class Quiz {
     this.input = '';
     this.currentIndex += 1;
     if (this.currentIndex == this.questions.length) {
-      this.gameOver();
+      return this.gameOver();
     }
     this.question = this.questions[this.currentIndex];
     this.key = this.question;
@@ -172,7 +172,7 @@ class MathQuiz extends Quiz {
   startGame(game) {
     super.startGame(game);
     this.operand = game;
-    this.max_question = this.max_question || Math.max(this.operand+3,10);
+    this.max_question = this.max_question || Math.max(this.operand+3,5);
     this.makeQuestions();
     this.currentIndex = -1;
     this.next();
@@ -281,5 +281,3 @@ $(document).keydown(function(event) {
   if (event.which == 8) { QUIZ.current.clearInput(); return false; }
   return true;
 });
-
-QUIZ.resetAll();

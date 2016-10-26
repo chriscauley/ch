@@ -1,5 +1,5 @@
 uR._routes = {
-  "^/$": function(path,data) {},
+  "^/$": function(path,data) { window.QUIZ.resetAll() },
   "/(game)/(.*)/": function(path,data) {
     uR.mountElement("gamelist");
     QUIZ.current = QUIZ.map[data.matches[2]];

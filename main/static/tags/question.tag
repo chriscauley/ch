@@ -30,6 +30,7 @@
   </div>
   <numpad></numpad>
   <div class="bot-note btn btn-warning btn-block"></div>
+
   this.on("update",function() {
     this.quiz = window.QUIZ.current;
   });
@@ -74,7 +75,7 @@
     this.quiz.startGame(this.quiz.game);
   }
   goHome(e) {
-    window.QUIZ.resetAll();
+    uR.route("/");
   }
 
   this.on("update",function() {
