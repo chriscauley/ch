@@ -54,7 +54,7 @@ class Quiz {
     this.input += number;
     if (this.input.indexOf(this.answer) != -1) { // correct!
       this.last_question = [this.verbose,'=',this.answer].join(' ');
-      if (this.input.indexOf(this.answer) != 0) { this.fail += 1; }
+      if (this.input.indexOf(this.answer) != 0) { this.fails += 1; }
       this.next();
     }
     riot.update();
@@ -139,8 +139,7 @@ class Quiz {
     this.game = game;
     this.fails = 0;
     this.start = new Date().valueOf();
-    $("#content").html("<question>");
-    riot.mount("question,numpad");
+    uR.mountElement("question");
     QUIZ.scores[this.name] = QUIZ.scores[this.name] || {};
     this.scores = QUIZ.scores[this.name][game] = QUIZ.scores[this.name][game] || [];
   }
@@ -172,7 +171,8 @@ class MathQuiz extends Quiz {
   startGame(game) {
     super.startGame(game);
     this.operand = game;
-    this.max_question = this.max_question || Math.max(this.operand+3,5);
+    this.max_question = this.max_question || Math.max(this.operand+3,10);
+    this.max_question = 3; //#! TODO remove when not in debug mode
     this.makeQuestions();
     this.currentIndex = -1;
     this.next();

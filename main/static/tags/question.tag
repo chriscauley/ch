@@ -53,14 +53,19 @@
 <game-over>
   <h1>{ quiz.name } { quiz.game }</h1>
   <div class="well">
-    <li>Played { this.scores.length } times</li>
-    <li>{ this.total_accuracy }% Correct</li>
-    <li>{ this.total_spq } seconds/question</li>
+    <li>This game:</li>
+    <li>{ last.accuracy }% Correct</li>
+    <li>{ last.spq } seconds/question</li>
+  </div>
+  <div class="well" if={ scores.length > 1 }>
+    <li>Played { scores.length } times</li>
+    <li>{ total_accuracy }% Correct</li>
+    <li>{ total_spq } seconds/question</li>
   </div>
   <div if={ scores.length > 3 } class="well">
     <h2>Last 3 Games:</h2>
-    <li>{ this.accuracy3 }% Correct</li>
-    <li>{ this.spq3 } seconds/question</li>
+    <li>{ accuracy3 }% Correct</li>
+    <li>{ spq3 } seconds/question</li>
   </div>
   <div class="row">
     <div class="half">
@@ -82,6 +87,11 @@
     this.quiz = window.QUIZ.current;
     this.scores = this.quiz.scores;
     this.total_fails = this.total_count = this.total_ms = this.fails3 = this.count3 = this.ms3 = 0;
+    var last = this.scores[this.scores.length-1]
+    this.last = {
+      accuracy: (last.count - last.fails) / last.count * 100,
+      spq: (last.ms*0.001 / last.count).toFixed(1)
+    }
     for (var i=0;i<this.scores.length;i++) {
       var score = this.scores[i];
       this.total_fails += score.fails;
