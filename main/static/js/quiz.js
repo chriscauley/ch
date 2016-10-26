@@ -142,6 +142,10 @@ class Quiz {
     uR.mountElement("question");
     QUIZ.scores[this.name] = QUIZ.scores[this.name] || {};
     this.scores = QUIZ.scores[this.name][game] = QUIZ.scores[this.name][game] || [];
+    this.makeQuestions();
+    this.currentIndex = -1;
+    this.next();
+    riot.update();
   }
 }
 
@@ -151,6 +155,13 @@ class LettersQuiz extends Quiz {
     this.name = "Letters";
     this.icon = 'letters-quiz';
     this.icon_text = "d>#";
+  }
+  getGames() {
+    var out = [];
+    uR.forEach(this.letters,function(l){
+      out.push({verbose: l});
+    });
+    return out;
   }
   makeQuestions() {
     this.questions = shuffle(range(0,26));
@@ -168,16 +179,6 @@ class MathQuiz extends Quiz {
     super(options);
     this.operator = operator;
   }
-  startGame(game) {
-    super.startGame(game);
-    this.operand = game;
-    this.max_question = this.max_question || Math.max(this.operand+3,10);
-    this.max_question = 3; //#! TODO remove when not in debug mode
-    this.makeQuestions();
-    this.currentIndex = -1;
-    this.next();
-    riot.update();
-  }
   getGames() {
     super.getGames()
     var games = range(2,25);
@@ -188,6 +189,9 @@ class MathQuiz extends Quiz {
     return out;
   }
   makeQuestions() {
+    this.operand = game;
+    this.max_question = this.max_question || Math.max(this.operand+3,10);
+    this.max_question = 3; //#! TODO remove when not in debug mode
     this.questions = shuffle(range(2,this.max_question+1));
   }
   getAnswer() {
